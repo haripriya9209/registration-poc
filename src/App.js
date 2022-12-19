@@ -13,6 +13,8 @@ function App() {
   const [cancel, setCancel] = useState(false);
   const [items, setItems] = useState([]);
   const [checkInStatus, setCheckInStatus] = useState(false);
+  const [noSyncData, setNoSyncData] = useState([]);
+  const [networkStatus, setNetworkStatus] = useState(navigator.onLine);
 
   useEffect(()=>{
     html5QrCode = new Html5Qrcode("reader");
@@ -20,6 +22,23 @@ function App() {
     getAllData();
     Registrations();
   }, []);
+
+  useEffect(()=>{
+    const handleOnline = () =>{
+      setNetworkStatus(true);
+    }
+    const handleOffline = () =>{
+      setNetworkStatus(false);
+    }
+    window.addEventListener('online', handleOnline);
+    window.addEventListener('offline', handleOffline);
+
+    return()=>{
+      window.removeEventListener('online', handleOnline);
+      window.removeEventListener('offline', handleOffline);
+    }
+  },[]);
+
 
   const qrConfig = {fps: 10, qrbox: {width: 200, height: 200}};
 
@@ -41,9 +60,23 @@ function App() {
   const createRegistration = async(bookingId, emailId, name, phoneNumber) =>{
     querries.createRegistrationsApi(bookingId, emailId, name, phoneNumber).then(
         res=>{
-          console.log(res);
+          // console.log(res);
         }
-    ).catch(err=>console.log(err));
+    ).catch(err=>{
+      console.log(err)
+      if(err.errors[0].message.includes("Network Error")){
+        console.log("network error.........");
+        setNoSyncData([...noSyncData,
+        {
+          bookingId: bookingId,
+          emailId: emailId,
+          name: name,
+          phoneNumber: phoneNumber
+        }
+        ])
+      }
+    }
+      );
   }
 
   //Update registration
@@ -53,6 +86,15 @@ function App() {
           console.log(res);
         }
     ).catch(err=>console.log(err));
+  }
+
+  //detecting network status
+  if(networkStatus){
+    if(noSyncData.length>0){
+      noSyncData.map((singleDataSet)=>{
+          createRegistration(singleDataSet.bookingId, singleDataSet.emailId, singleDataSet.name, singleDataSet.phoneNumber);
+      })
+    }
   }
 
   //Checking IndexedDB is present or not
@@ -143,6 +185,7 @@ function App() {
       const userReadWriteTransaction = db.transaction("userData", "readwrite");
       const newObjectStore = userReadWriteTransaction.objectStore("userData");
       // setItems([...items, entry]);
+      // console.log(entry);
       const users = newObjectStore.put({
         id: entry["bookingId"],
         name: entry["name"],
