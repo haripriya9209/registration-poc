@@ -1,0 +1,30 @@
+.qr-parent{
+    height: 300px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.qr-reader-container{
+    width: 100%;
+    margin-top: 60px;
+    display: flex;
+    justify-content: center;
+}
+
+.button-styles{
+    background: #FB5850;
+	color: white;
+	border: 0px;
+	width: 186px;
+	height: 50px;
+	border-radius: 5px;
+	font-weight: 600;
+	font-size: 16px;
+    cursor: pointer;
+} 
+
+.no-display{
+    display: none;
+}
