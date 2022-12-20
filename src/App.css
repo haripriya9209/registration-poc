@@ -12,7 +12,21 @@
     animation: App-logo-spin infinite 20s linear;
   }
 }
-
+.react-modal-sheet-header {
+  height: 40px;
+   width: 100%;
+    position: relative;
+      display: flex;
+      align-items: center;
+        justify-content: center;
+}
+.react-modal-sheet-drag-indicator {
+  width: 18px;
+   height: 4px;
+    border-radius: 99px;
+     background-color: rgb(221, 221, 221);
+      transform: translateX(2px) rotate(0deg);
+}
 .App-header {
   background-color: #282c34;
   min-height: 100vh;
@@ -27,7 +41,13 @@
 .App-link {
   color: #61dafb;
 }
-
+.btn-close{
+  display: none;
+}
+.sheet-bg {
+  filter: blur(30px);
+    -webkit-filter: blur(30px);
+}
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);
@@ -35,4 +55,32 @@
   to {
     transform: rotate(360deg);
   }
+}
+@media only screen and (min-width: 1025px) {
+  .react-modal-sheet-container {
+    width: 50% !important;
+    height: 50% !important;
+    justify-content: center;
+    align-items: center;
+    left: 25% !important;
+    bottom:  25% !important;
+  }
+  .btn-close{
+    background: url(./../public/brown-tick.svg);
+    background-repeat: no-repeat;
+    opacity:1;
+    margin-top: 10px!important;
+    margin-right: 4px!important;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    display: block;
+  }
+  .react-modal-sheet-header {
+   display: none;
+  }
+  .react-modal-sheet-drag-indicator {
+   display: none;
+  }
+  
 }

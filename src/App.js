@@ -8,6 +8,12 @@ import * as querries from "./common/api";
 import { API, graphqlOperation, Amplify } from "aws-amplify";
 import { OnCreateUsers } from "./graphql/subscriptions";
 import Sheet from "react-modal-sheet";
+import {
+  BrowserView,
+  MobileView,
+  isBrowser,
+  isMobile,
+} from "react-device-detect";
 let html5QrCode;
 Amplify.configure({
   Auth: {
@@ -331,7 +337,7 @@ function App() {
   };
 
   return (
-    <div className="App">
+    <div className={isOpen ? "App sheet-bg" : "App"}>
       <QrReader
         handleClickAdvanced={() => {
           handleClickAdvanced();
@@ -348,7 +354,16 @@ function App() {
       <button onClick={() => setOpen(true)}>Open sheet</button>
       <Sheet isOpen={isOpen} onClose={() => setOpen(false)}>
         <Sheet.Container>
-          <Sheet.Header />
+          {isMobile ? (
+            <Sheet.Header />
+          ) : (
+            <Sheet.Header>
+              <button
+                className="btn-close"
+                onClick={() => setOpen(false)}
+              ></button>
+            </Sheet.Header>
+          )}
           <Sheet.Content>
             {items.map((item) => (
               <li>{item.name}</li>
