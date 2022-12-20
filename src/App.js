@@ -274,7 +274,6 @@ function App() {
         bookingId: entry["bookingId"],
         checkIn: checkInStatus.toString(),
       });
-
       users.onsuccess = () => {
         userReadWriteTransaction.oncomplete = () => {
           getAllData();
