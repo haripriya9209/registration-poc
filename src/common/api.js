@@ -15,10 +15,10 @@ export const createRegistrationsApi = async(bookingId, emailId, name, phoneNumbe
     variables: {bookingId: bookingId, emailId: emailId, name: name, phoneNumber: phoneNumber}
 });
 
-
 //Update registration
 export const updateRegistrationApi = async(bookingId, checkIn, name) => await API.graphql({
     query: updateRegistrations,
     authMode: "AWS_IAM",
     variables: {bookingId: bookingId, checkIn: checkIn, name: name}
 });
+

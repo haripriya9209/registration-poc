@@ -5,8 +5,32 @@ import {useState, useEffect} from "react";
 import { Html5Qrcode } from "html5-qrcode";
 import ListItem from "./components/listItemTable";
 import * as querries from "./common/api";
+import { API, graphqlOperation, Amplify } from 'aws-amplify';
+import { OnCreateUsers } from "./graphql/subscriptions";
 
 let html5QrCode;
+Amplify.configure({
+  Auth: {
+    // REQUIRED - Amazon Cognito Region
+    region: "ap-southeast-1",
+    // OPTIONAL - Amazon Cognito User Pool ID
+    userPoolId: "ap-southeast-1_gwyXds7ER",
+    // OPTIONAL - Amazon Cognito Web Client ID (26-char alphanumeric string)
+    identityPoolId: "ap-southeast-1:527ce5e8-8152-495d-9e52-79d33fd669c9",
+    userPoolWebClientId: "44ta1mflvasr44aupus4lmk390",
+    // OPTIONAL - Enforce user authentication prior to accessing AWS resources or not
+    mandatorySignIn: false,
+  },
+});
+const myAppConfig = {
+  // ...
+  aws_appsync_graphqlEndpoint:
+    "https://ybcv7fwozrdshcimb5inb43k4q.appsync-api.ap-southeast-1.amazonaws.com/graphql",
+  aws_appsync_region: "ap-southeast-1",
+  aws_appsync_authenticationType: "AMAZON_COGNITO_USER_POOLS", // You have configured Auth with Amazon Cognito User Pool ID and Web Client Id
+  // ...
+};
+Amplify.configure(myAppConfig);
 
 function App() {
   const [display, setDisplay] = useState(true);
@@ -14,13 +38,25 @@ function App() {
   const [items, setItems] = useState([]);
   const [checkInStatus, setCheckInStatus] = useState(false);
   const [noSyncData, setNoSyncData] = useState([]);
+  const [noSuncUpdateData, setNoSyncUpdateData] = useState([]);
   const [networkStatus, setNetworkStatus] = useState(navigator.onLine);
+
+  useEffect(() => {
+    const subscription = API.graphql(graphqlOperation(OnCreateUsers))
+      .subscribe({
+        next: (todoData) => {
+        console.log(todoData);
+        }
+      })
+      return () => subscription.unsubscribe()
+  }, [])
 
   useEffect(()=>{
     html5QrCode = new Html5Qrcode("reader");
     collectCollectionIndexedDB();
     getAllData();
     Registrations();
+
   }, []);
 
   useEffect(()=>{
@@ -85,7 +121,19 @@ function App() {
         res=>{
           console.log(res);
         }
-    ).catch(err=>console.log(err));
+    ).catch(err=>{
+      console.log(err);
+      if(err.errors[0].message.includes("Network Error")){
+        console.log("network error.........");
+        setNoSyncUpdateData([...noSuncUpdateData,
+        {
+          bookingId: bookingId,
+          checkIn: checkIn,
+          name: name
+        }
+        ])
+      }
+    });
   }
 
   //detecting network status
@@ -93,6 +141,17 @@ function App() {
     if(noSyncData.length>0){
       noSyncData.map((singleDataSet)=>{
           createRegistration(singleDataSet.bookingId, singleDataSet.emailId, singleDataSet.name, singleDataSet.phoneNumber);
+      })
+      if(noSuncUpdateData.length>0){
+        noSuncUpdateData.map((singleUpdateSet)=>{
+          updateRegistration(singleUpdateSet.bookingId,singleUpdateSet.checkIn, singleUpdateSet.name)
+        })
+      }
+
+    }
+    else if(noSuncUpdateData.length>0){
+      noSuncUpdateData.map((singleUpdateSet)=>{
+        updateRegistration(singleUpdateSet.bookingId,singleUpdateSet.checkIn, singleUpdateSet.name)
       })
     }
   }
