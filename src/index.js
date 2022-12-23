@@ -1,18 +1,19 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import './index.css';
-import App from './App';
-import * as serviceWorkerRegistration from './serviceWorkerRegistration';
-import reportWebVitals from './reportWebVitals';
-import 'bootstrap/dist/css/bootstrap.css';
-import { Auth, Amplify } from 'aws-amplify';
+import React from "react";
+import ReactDOM from "react-dom/client";
+import "./index.css";
+import App from "./App";
+import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
+import reportWebVitals from "./reportWebVitals";
+import "bootstrap/dist/css/bootstrap.css";
+import { Auth, Amplify } from "aws-amplify";
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
+const root = ReactDOM.createRoot(document.getElementById("root"));
 
 Amplify.configure({
   Auth: {
     // REQUIRED - Amazon Cognito Region
     region: "ap-southeast-1",
+    aws_appsync_apiKey: "da2-ifgqrfgf4vgxzhattjaidbekx4",
     // OPTIONAL - Amazon Cognito User Pool ID
     userPoolId: "ap-southeast-1_gwyXds7ER",
     // OPTIONAL - Amazon Cognito Web Client ID (26-char alphanumeric string)
@@ -27,6 +28,7 @@ const myAppConfig = {
   // ...
   aws_appsync_graphqlEndpoint:
     "https://ybcv7fwozrdshcimb5inb43k4q.appsync-api.ap-southeast-1.amazonaws.com/graphql",
+  aws_appsync_apiKey: "da2-ifgqrfgf4vgxzhattjaidbekx4",
   aws_appsync_region: "ap-southeast-1",
   aws_appsync_authenticationType: "AMAZON_COGNITO_USER_POOLS", // You have configured Auth with Amazon Cognito User Pool ID and Web Client Id
   // ...
