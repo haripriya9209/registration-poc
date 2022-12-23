@@ -4,13 +4,13 @@ import { useState, useEffect } from "react";
 import { Html5Qrcode } from "html5-qrcode";
 import ListItem from "./components/listItemTable";
 import * as querries from "./common/api";
-import { API, graphqlOperation, Amplify } from "aws-amplify";
+import { API, graphqlOperation } from "aws-amplify";
 import { OnCreateUsers } from "./graphql/subscriptions";
 import Sheet from "react-modal-sheet";
 import {
-  BrowserView,
-  MobileView,
-  isBrowser,
+  // BrowserView,
+  // MobileView,
+  // isBrowser,
   isMobile,
 } from "react-device-detect";
 
