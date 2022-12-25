@@ -31,6 +31,6 @@ export const createRegistrationsApi = async (
 export const updateRegistrationApi = async (bookingId, checkIn, name) =>
   await API.graphql({
     query: updateRegistrations,
-    authMode: "AWS_IAM",
+    authMode: "API_KEY",
     variables: { bookingId: bookingId, checkIn: checkIn, name: name },
   });
